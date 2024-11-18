@@ -13,30 +13,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout du code
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Étape 1 : Checkout du code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Configuration de Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+      # Étape 2 : Configuration de Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
 
-    # Installation des dépendances
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Installe les dépendances
+      # Étape 3 : Installation des dépendances
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    # Exécution des tests avec couverture
-    - name: Run tests with coverage
-      run: |
-        pytest --cov=myapp --cov-report=xml  # Exécute les tests et génère coverage.xml
+      # Étape 4 : Configuration des variables d'environnement
+      - name: Set environment variables
+        run: |
+          echo "DJANGO_SETTINGS_MODULE=myselftest.settings" >> $GITHUB_ENV
 
-    # Téléversement du rapport de couverture sur Codecov
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: coverage.xml  # Spécifie le fichier de couverture
-        token: ${{ secrets.CODECOV_TOKEN }}  # Vous devez définir le token dans les secrets GitHub
+      # Étape 5 : Nettoyage des fichiers résiduels
+      - name: Clean residual files
+        run: |
+          find . -name "__pycache__" -exec rm -r {} +
+          find . -name "*.pyc" -exec rm -r {} +
+
+      # Étape 6 : Exécution des tests avec couverture
+      - name: Run tests with coverage
+        env:
+          DJANGO_SETTINGS_MODULE: myselftest.settings
+        run: |
+          pytest --ds=myselftest.settings --cov=myapp --cov-report=xml
+
+      # Étape 7 : Téléversement du rapport de couverture sur Codecov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          file: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
