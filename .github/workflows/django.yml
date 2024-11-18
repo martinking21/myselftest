@@ -13,29 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout code
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # 2. Set up Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'  # Assurez-vous d'utiliser la version Python que vous souhaitez
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12" # Assurez-vous d'utiliser la version Python que vous souhaitez
 
-    # 3. Install dependencies from requirements.txt
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Installe toutes les dépendances, y compris pytest
+      # 3. Install dependencies from requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Installe toutes les dépendances, y compris pytest
+          pip install pytest-cov           # Installe pytest-cov pour la couverture des tests
 
-    # 4. Run tests with coverage
-    - name: Run tests with coverage
-      run: |
-        pytest --cov=your_project --cov-report=xml  # Remplacez 'your_project' par le nom de votre projet
+      # 4. Run tests with coverage
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=your_project --cov-report=xml  # Remplacez 'your_project' par le nom de votre projet
 
-    # 5. Upload coverage to Codecov
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}  # Si votre dépôt est privé, ajoutez le secret pour Codecov
+      # 5. Upload coverage to Codecov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Si votre dépôt est privé, ajoutez le secret pour Codecov
