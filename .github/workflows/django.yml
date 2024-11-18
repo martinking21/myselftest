@@ -30,3 +30,16 @@ jobs:
         run: |
           python manage.py migrate
           python manage.py test
+
+      - name: Generate Coverage Report
+        run: |
+          pip install coverage
+          coverage run manage.py test
+          coverage xml
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
