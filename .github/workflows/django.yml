@@ -33,7 +33,7 @@ jobs:
       # 4. Run tests with coverage
       - name: Run tests with coverage
         run: |
-          pytest --cov=your_project --cov-report=xml  # Remplacez 'your_project' par le nom de votre projet
+          pytest --cov=myselftest --cov-report=xml  # Remplacez 'your_project' par le nom de votre projet
 
       # 5. Upload coverage to Codecov
       - name: Upload coverage to Codecov
