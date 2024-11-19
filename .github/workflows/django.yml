@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -29,16 +33,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Étape 4 : Configuration des variables d'environnement
-      - name: Set environment variables
-        run: |
-          echo "DJANGO_SETTINGS_MODULE=myselftest.settings" >> $GITHUB_ENV
-
-      # Étape 5 : Nettoyage des fichiers résiduels
+      # Étape 4 : Nettoyage des fichiers résiduels
       - name: Clean residual files
         run: |
           find . -name "__pycache__" -exec rm -r {} +
           find . -name "*.pyc" -exec rm -r {} +
+
+      # Étape 5 : Configuration des variables d'environnement
+      - name: Set environment variables
+        run: |
+          echo "DJANGO_SETTINGS_MODULE=myselftest.settings" >> $GITHUB_ENV
 
       # Étape 6 : Exécution des tests avec couverture
       - name: Run tests with coverage
@@ -53,3 +57,4 @@ jobs:
         with:
           file: coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true # Pour garantir que les erreurs de Codecov échouent la CI
