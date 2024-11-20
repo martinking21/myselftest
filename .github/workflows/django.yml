@@ -36,15 +36,15 @@ jobs:
         run: ls -la ./coverage.xml
 
       - name: Upload coverage to Codecov
-        if: always() # Ensures this runs even if tests fail, for debugging
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          slug: martinking21/myselftest
           file: ./coverage.xml
           verbose: true
 
       - name: Save coverage report as artifact
-        if: failure() # Backup if Codecov upload fails
+        if: failure() # Save the coverage file if Codecov fails
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
