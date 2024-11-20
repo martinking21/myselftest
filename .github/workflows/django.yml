@@ -30,12 +30,22 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: myselftest.settings
         run: |
-          pytest --ds=myselftest.settings --cov=myapp --cov-report=xml
+          pytest --ds=myselftest.settings --cov=myapp --cov-report=xml --cov-report=html
+
+      - name: Verify coverage file exists
+        run: ls -la ./coverage.xml
 
       - name: Upload coverage to Codecov
+        if: always() # Ensures this runs even if tests fail, for debugging
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: martinking21/myselftest
           file: ./coverage.xml
           verbose: true
+
+      - name: Save coverage report as artifact
+        if: failure() # Backup if Codecov upload fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./coverage.xml
